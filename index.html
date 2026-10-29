@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Atelier Vauquelin — Fine Watchmaking & Jewelry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --canvas:#0a0a0a; --surface:#131313; --surface-low:#1c1b1b; --surface-cont:#201f1f;
+  --surface-high:#2a2a2a; --surface-lowest:#0e0e0e;
+  --on-surface:#e5e2e1; --on-surface-variant:#d1c5b8; --outline:#998f83; --outline-variant:#4d463c;
+  --primary:#e2c399; --primary-container:#c5a880; --on-primary:#402d0f; --secondary:#e9c349;
+  --alabaster:#f9f8f6;
+  --hairline:rgba(197,168,128,.18); --hairline-hover:rgba(212,175,55,.45);
+  --gutter:2rem; --margin:4rem; --space-xs:.375rem; --space-sm:.75rem; --space-md:1.5rem; --space-lg:3rem; --space-xl:5rem;
+  --font-display:'Playfair Display',serif; --font-body:'Geist',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--canvas);color:var(--on-surface);font-family:var(--font-body);font-size:.9375rem;line-height:1.6rem;letter-spacing:.01em;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none} img{display:block;max-width:100%;height:auto}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:inherit}
+
+/* ============ TYPOGRAPHY ============ */
+.display-hero{font-family:var(--font-display);font-size:5rem;font-weight:400;line-height:5.5rem;letter-spacing:-.02em}
+.headline-lg{font-family:var(--font-display);font-size:3.25rem;font-weight:400;line-height:3.75rem;letter-spacing:-.015em}
+.headline-md{font-family:var(--font-display);font-size:2rem;font-weight:400;line-height:2.5rem;letter-spacing:-.01em}
+.headline-sm{font-family:var(--font-display);font-size:1.5rem;font-weight:500;line-height:2rem}
+.title-editorial{font-family:var(--font-display);font-size:1.25rem;font-weight:400;line-height:1.75rem;letter-spacing:.02em}
+.body-lg{font-size:1.125rem;font-weight:300;line-height:1.875rem}
+.body-md{font-size:.9375rem;line-height:1.6rem}
+.body-sm{font-size:.8125rem;line-height:1.35rem;letter-spacing:.02em}
+.label-caps{font-size:.6875rem;font-weight:500;line-height:1rem;letter-spacing:.18em;text-transform:uppercase}
+.technical-data{font-size:.75rem;line-height:1.2rem;letter-spacing:.05em}
+.text-muted{color:var(--outline)} .text-primary{color:var(--primary-container)}
+.text-alabaster{color:var(--alabaster)} .pre-line{white-space:pre-line}
+
+/* ============ LAYOUT ============ */
+.container{max-width:1440px;margin:0 auto;padding:0 var(--margin)}
+.section{padding:var(--space-xl) 0;border-bottom:1px solid var(--hairline)}
+.section:last-child{border-bottom:none}
+.grid{display:grid;gap:var(--gutter)}
+.grid-4{grid-template-columns:repeat(4,1fr)} .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-7-5{grid-template-columns:7fr 5fr} .grid-5-7{grid-template-columns:5fr 7fr}
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-sm{gap:var(--space-sm)}.gap-md{gap:var(--space-md)}.gap-lg{gap:var(--space-lg)}
+
+/* ============ HEADER ============ */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline)}
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:1.25rem var(--margin);max-width:1440px;margin:0 auto}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand-mark{font-family:var(--font-display);font-size:1.375rem;color:var(--alabaster)}
+.brand-sub{font-size:.625rem;letter-spacing:.22em;text-transform:uppercase;color:var(--primary-container);margin-top:.25rem}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-link{font-size:.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--on-surface-variant);position:relative;padding-bottom:.25rem;transition:color .2s}
+.nav-link::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--primary-container);transition:width .3s}
+.nav-link:hover,.nav-link.router-link-active{color:var(--alabaster)}
+.nav-link:hover::after,.nav-link.router-link-active::after{width:100%}
+.nav-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;border:1px solid var(--primary-container);color:var(--alabaster);font-size:.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;transition:all .2s}
+.nav-cta:hover{border-color:var(--secondary);background:rgba(197,168,128,.08)}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.75rem;font-size:.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;transition:all .2s;border-radius:0}
+.btn-primary{background:var(--alabaster);color:var(--canvas)}
+.btn-primary:hover{background:var(--primary-container);color:var(--on-primary)}
+.btn-secondary{background:transparent;border:1px solid var(--primary-container);color:var(--alabaster)}
+.btn-secondary:hover{border-color:var(--secondary);background:rgba(197,168,128,.08)}
+.btn-text{padding:0;color:var(--primary-container);position:relative;display:inline-flex;align-items:center;gap:.25rem}
+.btn-text::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--primary-container);transition:width .3s}
+.btn-text:hover::after{width:100%}
+
+/* ============ CARDS ============ */
+.product-card{background:var(--surface-low);border:1px solid var(--hairline);overflow:hidden;transition:border-color .3s;display:flex;flex-direction:column}
+.product-card:hover{border-color:var(--hairline-hover)}
+.product-media{aspect-ratio:4/5;background:var(--surface-cont);overflow:hidden;position:relative}
+.product-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.product-card:hover .product-media img{transform:scale(1.03)}
+.product-tag{position:absolute;top:1rem;left:1rem;padding:.375rem .75rem;background:rgba(10,10,10,.7);backdrop-filter:blur(8px);color:var(--primary-container)}
+.product-body{padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;flex:1}
+.product-title{font-family:var(--font-display);font-size:1.375rem;line-height:1.4;color:var(--alabaster)}
+.product-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:1rem;border-top:1px solid var(--hairline)}
+.product-price{font-family:var(--font-display);font-size:1.125rem;color:var(--alabaster)}
+
+/* ============ FORMS (public) ============ */
+.form-field{position:relative;margin-bottom:2rem}
+.form-input,.form-select,.form-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(197,168,128,.3);padding:1rem 0 .5rem;color:var(--alabaster);font-size:.9375rem;border-radius:0;transition:border-color .2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-bottom-color:var(--primary-container)}
+.form-label{position:absolute;left:0;top:1rem;font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--outline);pointer-events:none;transition:all .2s}
+.form-input:focus+.form-label,.form-input:not(:placeholder-shown)+.form-label,
+.form-select:focus+.form-label,.form-select:valid+.form-label,
+.form-textarea:focus+.form-label,.form-textarea:not(:placeholder-shown)+.form-label{top:-.25rem;font-size:.625rem;color:var(--primary-container)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path fill='%23c5a880' d='M6 8L0 0h12z'/></svg>");background-repeat:no-repeat;background-position:right 0 center;padding-right:1.5rem}
+.form-select option{background:var(--surface-cont);color:var(--alabaster)}
+.form-textarea{resize:vertical;min-height:6rem}
+.form-check{display:flex;align-items:flex-start;gap:.75rem;cursor:pointer}
+.form-check-box{width:14px;height:14px;border:1px solid var(--primary-container);flex-shrink:0;margin-top:.25rem;display:flex;align-items:center;justify-content:center}
+.form-check input{display:none}
+.form-check input:checked+.form-check-box{background:var(--primary-container)}
+.form-check input:checked+.form-check-box::after{content:'';width:6px;height:6px;background:var(--canvas)}
+
+/* ============ SPEC TABLE ============ */
+.spec-table{width:100%;border-collapse:collapse}
+.spec-table tr{border-bottom:1px solid rgba(255,255,255,.06)}
+.spec-table td{padding:1rem 0;vertical-align:top}
+.spec-table td:first-child{color:var(--primary-container);width:45%}
+.spec-table td:last-child{text-align:right}
+
+/* ============ HEROES ============ */
+.hero{position:relative;min-height:90vh;display:flex;align-items:flex-end;padding:var(--space-xl) 0;overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--canvas) 100%)}
+.hero-content{position:relative;z-index:1;max-width:56rem}
+.page-hero{padding:var(--space-xl) 0 var(--space-lg);border-bottom:1px solid var(--hairline)}
+
+/* ============ FOOTER ============ */
+.site-footer{background:var(--surface-lowest);border-top:1px solid var(--hairline);padding:var(--space-xl) 0 var(--space-lg)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:var(--space-lg);margin-bottom:var(--space-lg)}
+.footer-heading{color:var(--primary-container);margin-bottom:1.25rem}
+.footer-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.footer-list a{color:var(--on-surface-variant);transition:color .2s}
+.footer-list a:hover{color:var(--alabaster)}
+.newsletter-input{display:flex;border-bottom:1px solid var(--primary-container);margin-top:1rem}
+.newsletter-input input{flex:1;background:transparent;border:none;padding:.75rem 0;color:var(--alabaster)}
+.newsletter-input input:focus{outline:none}
+.newsletter-input button{color:var(--primary-container);padding:0 .5rem}
+.footer-bottom{padding-top:var(--space-md);border-top:1px solid var(--hairline);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;color:var(--outline)}
+.footer-legal{display:flex;gap:1.5rem;flex-wrap:wrap}
+
+/* ============ MISC COMPONENTS ============ */
+.salon-card{border:1px solid var(--hairline);padding:2rem;background:var(--surface-low);transition:border-color .3s}
+.salon-card:hover{border-color:var(--hairline-hover)}
+.salon-city{font-family:var(--font-display);font-size:1.75rem;color:var(--alabaster);margin:.25rem 0 1rem}
+.salon-detail{display:flex;justify-content:space-between;gap:1rem;padding:.75rem 0;border-top:1px solid var(--hairline)}
+.pillar-card{border:1px solid var(--hairline);background:var(--surface-low);overflow:hidden;display:flex;flex-direction:column}
+.pillar-media{aspect-ratio:3/4;overflow:hidden}
+.pillar-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.pillar-card:hover .pillar-media img{transform:scale(1.04)}
+.pillar-body{padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;flex:1}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gutter);counter-reset:phase}
+.timeline-item{border-top:1px solid var(--primary-container);padding-top:1.5rem;counter-increment:phase}
+.timeline-item::before{content:"0" counter(phase);font-family:var(--font-display);font-size:2rem;color:var(--primary-container);display:block;margin-bottom:1rem}
+.dept-header{display:grid;grid-template-columns:1fr 2fr;gap:var(--space-lg);padding:var(--space-lg) 0;border-bottom:1px solid var(--hairline);align-items:end}
+.dept-title{font-family:var(--font-display);font-size:2.5rem;color:var(--alabaster);margin-top:.75rem}
+.stat-block{border-left:1px solid var(--primary-container);padding-left:1.5rem}
+.stat-value{font-family:var(--font-display);font-size:2.5rem;color:var(--alabaster);line-height:1;margin-bottom:.5rem}
+.eyebrow-rule{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;color:var(--primary-container)}
+.eyebrow-rule::after{content:'';flex:1;height:1px;background:var(--hairline)}
+.jump-link{color:var(--on-surface-variant);transition:color .2s;background:none}
+.jump-link:hover{color:var(--alabaster)}
+.guarantee-box{border:1px solid var(--hairline);background:var(--surface-low);padding:1.5rem;margin-top:2rem}
+
+/* ============ DASHBOARD ============ */
+.dash-layout{display:grid;grid-template-columns:230px 1fr;gap:var(--space-lg);padding:var(--space-lg) 0;min-height:70vh}
+.sidebar{border-right:1px solid var(--hairline);padding-right:var(--space-md)}
+.sidebar-title{color:var(--primary-container);margin-bottom:1.5rem}
+.sidebar-link{display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;font-size:.6875rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--on-surface-variant);border-left:1px solid transparent;transition:all .2s;margin-bottom:.25rem}
+.sidebar-link:hover{color:var(--alabaster);background:rgba(197,168,128,.05)}
+.sidebar-link.router-link-active{color:var(--alabaster);border-left-color:var(--secondary);background:rgba(197,168,128,.08)}
+.savebar{position:sticky;top:78px;z-index:50;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border:1px solid var(--hairline);padding:.85rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.adm-card{border:1px solid var(--hairline);background:var(--surface-low);padding:1.75rem;margin-bottom:1.5rem}
+.adm-card-title{font-family:var(--font-display);font-size:1.25rem;color:var(--alabaster);margin-bottom:.35rem}
+.adm-card-sub{color:var(--outline);margin-bottom:1.5rem}
+.adm-field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+.adm-label{font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;color:var(--primary-container)}
+.adm-input,.adm-textarea,.adm-select{background:var(--surface-cont);border:1px solid var(--outline-variant);padding:.75rem 1rem;color:var(--alabaster);font-size:.875rem;border-radius:0;transition:border-color .2s;width:100%}
+.adm-input:focus,.adm-textarea:focus,.adm-select:focus{outline:none;border-color:var(--primary-container)}
+.adm-textarea{resize:vertical;min-height:4.5rem}
+.adm-select{appearance:none}
+.adm-select option{background:var(--surface-cont)}
+.adm-grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 1.25rem}
+.adm-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 1.25rem}
+.adm-item{border:1px dashed var(--outline-variant);padding:1.25rem;margin-bottom:1rem;position:relative}
+.adm-remove{position:absolute;top:.6rem;right:.6rem;color:var(--outline);font-size:1.1rem;padding:.25rem;transition:color .2s}
+.adm-remove:hover{color:#ffb4ab}
+.adm-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.1rem;border:1px solid var(--primary-container);color:var(--alabaster);font-size:.625rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;transition:all .2s;border-radius:0}
+.adm-btn:hover{border-color:var(--secondary);background:rgba(197,168,128,.08)}
+.adm-btn-solid{background:var(--alabaster);color:var(--canvas);border-color:var(--alabaster)}
+.adm-btn-solid:hover{background:var(--primary-container);border-color:var(--primary-container);color:var(--on-primary)}
+.adm-btn-danger{border-color:rgba(255,180,171,.4);color:#ffb4ab}
+.adm-btn-danger:hover{border-color:#ffb4ab;background:rgba(255,180,171,.06)}
+.adm-table{width:100%;border-collapse:collapse}
+.adm-table th{text-align:left;padding:.75rem 0;color:var(--primary-container);border-bottom:1px solid var(--hairline);font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+.adm-table td{padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle}
+.adm-thumb{width:52px;height:65px;object-fit:cover;border:1px solid var(--hairline)}
+.preview-img{margin-top:.75rem;height:130px;width:100%;object-fit:cover;border:1px solid var(--hairline)}
+.gate{min-height:70vh;display:flex;align-items:center;justify-content:center}
+.gate-card{border:1px solid var(--hairline);background:var(--surface-low);padding:3rem;width:min(420px,100%);text-align:center}
+.gate-card input{text-align:center;margin:1.5rem 0}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translate(-50%,120%);background:var(--alabaster);color:var(--canvas);padding:.9rem 1.75rem;font-size:.6875rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;z-index:999;transition:transform .35s ease;pointer-events:none}
+.toast.show{transform:translate(-50%,0)}
+.breadcrumb{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;color:var(--outline);margin-bottom:2.5rem}
+.breadcrumb a:hover{color:var(--alabaster)}
+
+/* ============ TRANSITIONS & RESPONSIVE ============ */
+.fade-enter-active,.fade-leave-active{transition:opacity .25s ease}
+.fade-enter-from,.fade-leave-to{opacity:0}
+@media(max-width:1024px){
+  :root{--margin:2.5rem}
+  .display-hero{font-size:3.5rem;line-height:4rem}
+  .headline-lg{font-size:2.5rem;line-height:3rem}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .timeline{grid-template-columns:repeat(2,1fr)}
+  .dept-header,.grid-7-5,.grid-5-7{grid-template-columns:1fr}
+  .grid-4{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  :root{--margin:1.5rem;--space-xl:3rem}
+  .display-hero{font-size:2.75rem;line-height:3.25rem}
+  .headline-lg{font-size:2.25rem;line-height:2.75rem}
+  .nav-links{display:none}
+  .grid-3,.grid-2,.grid-4{grid-template-columns:1fr}
+  .footer-grid,.timeline{grid-template-columns:1fr}
+  .dash-layout{grid-template-columns:1fr}
+  .sidebar{border-right:none;border-bottom:1px solid var(--hairline);padding:0 0 var(--space-md);display:flex;flex-wrap:wrap;gap:.5rem}
+  .sidebar-title{width:100%}
+  .adm-grid2,.adm-grid3{grid-template-columns:1fr}
+  .hero{min-height:70vh}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ==================== HEADER ==================== -->
+<script type="text/x-template" id="tpl-header">
+<header class="site-header">
+  <nav class="nav-bar">
+    <router-link to="/" class="brand">
+      <span class="brand-mark">{{ store.data.site.brand }}</span>
+      <span class="brand-sub">{{ store.data.site.tagline }}</span>
+    </router-link>
+    <ul class="nav-links">
+      <li><router-link to="/" class="nav-link">Home</router-link></li>
+      <li><router-link to="/about" class="nav-link">About</router-link></li>
+      <li><router-link to="/gallery" class="nav-link">Gallery</router-link></li>
+      <li><router-link to="/contact" class="nav-link">Contact</router-link></li>
+    </ul>
+    <router-link to="/contact" class="nav-cta">Private Inquiry
+      <span class="material-icons-outlined" style="font-size:1rem">north_east</span>
+    </router-link>
+  </nav>
+</header>
+</script>
+
+<!-- ==================== FOOTER ==================== -->
+<script type="text/x-template" id="tpl-footer">
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:1.5rem">
+          <span class="brand-mark">{{ store.data.site.brand }}</span>
+          <span class="brand-sub">Est. 1889 · Place Vendôme</span>
+        </div>
+        <p class="title-editorial text-muted" style="max-width:26rem">The Vauquelin Gazette — private monographs, seasonal watchmaking releases, and salon invitations dispatched directly to your private residence.</p>
+        <form class="newsletter-input" @submit.prevent="toast('Subscribed to The Vauquelin Gazette.')">
+          <input type="email" required placeholder="Your private correspondence"/>
+          <button type="submit" class="material-icons-outlined">arrow_forward</button>
+        </form>
+      </div>
+      <div>
+        <h4 class="label-caps footer-heading">Private Salons</h4>
+        <ul class="footer-list">
+          <li v-for="s in store.data.contact.salons" :key="s.city"><span class="body-sm text-alabaster">{{ s.city }}</span><br/><span class="body-sm text-muted">{{ s.address.split(',')[0] }} · By appointment</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="label-caps footer-heading">House</h4>
+        <ul class="footer-list">
+          <li><router-link to="/about">About the House</router-link></li>
+          <li><router-link to="/gallery">Gallery</router-link></li>
+          <li><router-link to="/contact">Private Client Advisory</router-link></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="label-caps footer-heading">Liaison</h4>
+        <ul class="footer-list">
+          <li><a href="https://instagram.com" target="_blank" rel="noopener">Instagram / Journal</a></li>
+          <li><a href="#">Fine Watchmaking Register</a></li>
+          <li><a :href="'mailto:' + store.data.contact.liaison.email">{{ store.data.contact.liaison.email }}</a></li>
+          <li><router-link to="/dashboard" class="text-primary">Dashboard</router-link></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="body-sm">© 2025 Atelier Vauquelin. All rights reserved. Fine Watchmaking & Jewelry.</span>
+      <div class="footer-legal body-sm"><a href="#">Confidentiality</a><a href="#">Provenance & Terms</a><a href="#">Certificates of Authenticity</a></div>
+    </div>
+  </div>
+</footer>
+</script>
+
+<!-- ==================== PRODUCT CARD ==================== -->
+<script type="text/x-template" id="tpl-product-card">
+<article class="product-card">
+  <router-link :to="'/gallery/' + product.id" class="product-media">
+    <img :src="product.image" :alt="product.title"/>
+    <span class="product-tag label-caps">{{ product.tag }}</span>
+  </router-link>
+  <div class="product-body">
+    <p class="technical-data text-muted">{{ product.ref }}</p>
+    <router-link :to="'/gallery/' + product.id" class="product-title">{{ product.title }}</router-link>
+    <p class="body-sm text-muted">{{ product.desc }}</p>
+    <div class="product-footer">
+      <span class="product-price">{{ product.price }}</span>
+      <router-link :to="'/gallery/' + product.id" class="btn-text label-caps">Inspect
+        <span class="material-icons-outlined" style="font-size:1rem">zoom_in</span>
+      </router-link>
+    </div>
+  </div>
+</article>
+</script>
+
+<!-- ==================== HOME ==================== -->
+<script type="text/x-template" id="tpl-home">
+<div>
+  <section class="hero">
+    <div class="hero-bg"><img :src="home.hero.image" alt=""/></div>
+    <div class="container hero-content">
+      <p class="label-caps text-primary" style="margin-bottom:1.5rem">{{ home.hero.eyebrow }}</p>
+      <h1 class="display-hero text-alabaster pre-line" style="margin-bottom:1.5rem">{{ home.hero.title }}</h1>
+      <p class="body-lg" style="color:var(--on-surface-variant);max-width:38rem;margin-bottom:2.5rem">{{ home.hero.lede }}</p>
+      <router-link to="/gallery" class="btn btn-primary">Explore the Collection
+        <span class="material-icons-outlined" style="font-size:1rem">arrow_forward</span>
+      </router-link>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">The Workshop Craft · Unique Piece Register</div>
+      <div class="grid grid-4">
+        <div class="stat-block" v-for="s in home.stats" :key="s.label">
+          <div class="stat-value">{{ s.value }}</div>
+          <div class="label-caps text-primary" style="margin-bottom:.5rem">{{ s.label }}</div>
+          <p class="body-sm text-muted">{{ s.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">{{ home.portfolio.eyebrow }}</div>
+      <h2 class="headline-lg text-alabaster" style="margin-bottom:1rem">{{ home.portfolio.title }}</h2>
+      <p class="body-lg text-muted" style="max-width:44rem;margin-bottom:3rem">{{ home.portfolio.lede }}</p>
+      <div class="grid grid-3">
+        <article class="product-card" v-for="p in home.portfolio.items" :key="p.ref">
+          <router-link to="/gallery" class="product-media">
+            <img :src="p.image" :alt="p.title"/>
+            <span class="product-tag label-caps">{{ p.num }} / {{ p.dept }}</span>
+          </router-link>
+          <div class="product-body">
+            <p class="technical-data text-muted">{{ p.ref }}</p>
+            <h3 class="product-title">{{ p.title }}</h3>
+            <p class="body-sm text-muted">{{ p.desc }}</p>
+            <div class="product-footer">
+              <span class="label-caps text-primary pre-line">{{ p.tag }}</span>
+              <router-link to="/gallery" class="btn-text label-caps">View Dossier
+                <span class="material-icons-outlined" style="font-size:1rem">arrow_right_alt</span>
+              </router-link>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2" style="align-items:center;gap:var(--space-xl)">
+      <div>
+        <div class="eyebrow-rule label-caps">{{ home.cta.eyebrow }}</div>
+        <h2 class="headline-lg text-alabaster pre-line" style="margin-bottom:1.5rem">{{ home.cta.title }}</h2>
+        <p class="body-lg text-muted" style="margin-bottom:2rem;max-width:32rem">{{ home.cta.desc }}</p>
+        <div class="flex gap-md">
+          <router-link to="/contact" class="btn btn-primary">{{ home.cta.primaryLabel }}</router-link>
+          <router-link to="/about" class="btn btn-secondary">{{ home.cta.secondaryLabel }}</router-link>
+        </div>
+      </div>
+      <div class="product-media" style="aspect-ratio:4/5"><img :src="home.cta.image" alt=""/></div>
+    </div>
+  </section>
+</div>
+</script>
+
+<!-- ==================== GALLERY ==================== -->
+<script type="text/x-template" id="tpl-gallery">
+<div>
+  <section class="page-hero">
+    <div class="container">
+      <p class="label-caps text-primary" style="margin-bottom:1rem">Permanent Catalogue · 2025 Edition</p>
+      <h1 class="headline-lg text-alabaster" style="margin-bottom:1rem">The Gallery</h1>
+      <p class="body-lg text-muted" style="max-width:44rem">A curated register of singular horological creations, architectural high jewelry, and hand-saddled patinas — finished in our Geneva and Paris workshops in strictly numbered editions.</p>
+      <div class="flex gap-md" style="margin-top:2rem">
+        <button v-for="d in departments" :key="d.key" class="jump-link label-caps" @click="scrollToDept(d.key)">
+          {{ d.meta.num }} — {{ d.meta.name }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" v-for="d in departments" :key="d.key" :id="'dept-' + d.key">
+    <div class="container">
+      <div class="dept-header">
+        <div>
+          <p class="label-caps text-primary">Department {{ d.meta.num }} · {{ d.meta.name }}</p>
+          <h2 class="dept-title">{{ d.meta.title }}</h2>
+        </div>
+        <div>
+          <p class="body-lg text-muted">{{ d.meta.desc }}</p>
+          <p class="technical-data text-muted" style="margin-top:1rem">{{ d.meta.cert }}</p>
+        </div>
+      </div>
+      <div class="grid grid-3" style="margin-top:var(--space-lg)" v-if="d.items.length">
+        <product-card v-for="p in d.items" :key="p.id" :product="p"/>
+      </div>
+      <p v-else class="body-md text-muted" style="margin-top:var(--space-lg)">No pieces registered in this category yet. Add them from the Dashboard.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="text-align:center;max-width:44rem">
+      <div class="eyebrow-rule label-caps" style="justify-content:center">Private Commissions & Salons</div>
+      <h2 class="headline-md text-alabaster" style="margin-bottom:1rem">Seeking a bespoke dimension or a one-of-a-kind stone setting?</h2>
+      <p class="body-lg text-muted" style="margin-bottom:2rem">Our master jewelers and watchmakers welcome private commissions by appointment in Paris, Geneva, or through your designated private wealth advisory.</p>
+      <router-link to="/contact" class="btn btn-primary">Request Private Audience</router-link>
+    </div>
+  </section>
+</div>
+</script>
+
+<!-- ==================== SINGLE PRODUCT ==================== -->
+<script type="text/x-template" id="tpl-product">
+<div v-if="product">
+  <section class="section" style="padding-top:var(--space-lg)">
+    <div class="container">
+      <nav class="breadcrumb label-caps">
+        <router-link to="/gallery">Gallery</router-link><span>/</span>
+        <span class="text-primary">{{ deptMeta.name }}</span><span>/</span>
+        <span>{{ product.ref }}</span>
+      </nav>
+      <div class="grid grid-7-5" style="gap:var(--space-xl)">
+        <div class="product-media" style="aspect-ratio:4/5">
+          <img :src="product.image" :alt="product.title"/>
+          <span class="product-tag label-caps">{{ product.tag }}</span>
+        </div>
+        <div>
+          <p class="technical-data text-muted" style="margin-bottom:1rem">{{ product.ref }}</p>
+          <h1 class="headline-lg text-alabaster" style="margin-bottom:1.5rem">{{ product.title }}</h1>
+          <p class="body-lg text-muted" style="margin-bottom:2rem">{{ product.desc }}</p>
+          <p class="headline-md text-alabaster" style="margin-bottom:2rem">{{ product.price }}</p>
+          <table class="spec-table" v-if="product.specs.length">
+            <tbody><tr v-for="s in product.specs" :key="s.k"><td class="label-caps">{{ s.k }}</td><td class="body-sm">{{ s.v }}</td></tr></tbody>
+          </table>
+          <p class="technical-data text-primary" style="margin-top:1.5rem" v-if="product.note">{{ product.note }}</p>
+          <div class="flex gap-md" style="margin-top:2.5rem;flex-wrap:wrap">
+            <a v-if="product.href" :href="product.href" target="_blank" rel="noopener" class="btn btn-primary">
+              {{ product.ctaLabel }} <span class="material-icons-outlined" style="font-size:1rem">arrow_outward</span>
+            </a>
+            <router-link v-else to="/contact" class="btn btn-primary">{{ product.ctaLabel }}</router-link>
+            <router-link to="/contact" class="btn btn-secondary">Request Private Audience</router-link>
+          </div>
+          <div class="guarantee-box">
+            <p class="label-caps text-primary" style="margin-bottom:.5rem">Micro-Craftsmanship Guarantee</p>
+            <p class="body-sm text-muted">Every piece photographed is the exact specimen available in our salon or the reference master calibrated by our master artisans. Registered with permanent archival trace.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section" v-if="related.length">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">Continued Inspection · {{ deptMeta.name }}</div>
+      <div class="grid grid-3">
+        <product-card v-for="p in related" :key="p.id" :product="p"/>
+      </div>
+    </div>
+  </section>
+</div>
+<div v-else class="container" style="padding:var(--space-xl) 0;text-align:center">
+  <h1 class="headline-md text-alabaster">Piece not found in the registry.</h1>
+  <router-link to="/gallery" class="btn btn-secondary" style="margin-top:2rem">Return to Gallery</router-link>
+</div>
+</script>
+
+<!-- ==================== ABOUT ==================== -->
+<script type="text/x-template" id="tpl-about">
+<div>
+  <section class="page-hero">
+    <div class="container">
+      <p class="label-caps text-primary" style="margin-bottom:1rem">{{ about.hero.eyebrow }}</p>
+      <h1 class="headline-lg text-alabaster pre-line" style="margin-bottom:1rem">{{ about.hero.title }}</h1>
+      <p class="body-lg text-muted" style="max-width:44rem">{{ about.hero.lede }}</p>
+      <div class="grid grid-2" style="margin-top:3rem;max-width:48rem">
+        <div class="stat-block" v-for="s in about.hero.stats" :key="s.label">
+          <div class="stat-value">{{ s.value }}</div>
+          <div class="label-caps text-primary">{{ s.label }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2" style="gap:var(--space-xl);align-items:start">
+      <div>
+        <div class="eyebrow-rule label-caps">{{ about.philosophy.eyebrow }}</div>
+        <h2 class="headline-md text-alabaster" style="margin-bottom:1.5rem">{{ about.philosophy.title }}</h2>
+        <p v-for="(para, i) in about.philosophy.paragraphs" :key="i" class="body-md text-muted" style="margin-bottom:1.5rem">{{ para }}</p>
+      </div>
+      <blockquote style="border-left:1px solid var(--primary-container);padding-left:2rem">
+        <p class="title-editorial text-alabaster" style="font-style:italic">“{{ about.philosophy.quote.text }}”</p>
+        <footer class="label-caps text-primary" style="margin-top:1.5rem">— {{ about.philosophy.quote.attribution }}</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">{{ about.pillars.eyebrow }} · The Physicality of the Gestures</div>
+      <h2 class="headline-lg text-alabaster" style="margin-bottom:3rem">{{ about.pillars.lede }}</h2>
+      <div class="grid grid-4">
+        <article class="pillar-card" v-for="m in about.pillars.items" :key="m.num">
+          <div class="pillar-media"><img :src="m.image" :alt="m.title"/></div>
+          <div class="pillar-body">
+            <p class="label-caps text-primary">Craft {{ m.num }} · {{ m.craft }}</p>
+            <h3 class="headline-sm text-alabaster">{{ m.title }}</h3>
+            <p class="body-sm text-muted">{{ m.desc }}</p>
+            <p class="technical-data text-primary" style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--hairline)">{{ m.spec }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">{{ about.timeline.eyebrow }} · Four Stages of Singularity</div>
+      <p class="body-lg text-muted" style="max-width:44rem;margin-bottom:3rem">{{ about.timeline.lede }}</p>
+      <div class="timeline">
+        <div class="timeline-item" v-for="t in about.timeline.items" :key="t.months">
+          <p class="label-caps text-primary">{{ t.months }} · {{ t.phase }}</p>
+          <h3 class="headline-sm text-alabaster" style="margin:.75rem 0">{{ t.title }}</h3>
+          <p class="body-sm text-muted" style="margin-bottom:1rem">{{ t.desc }}</p>
+          <p class="technical-data text-muted">{{ t.deliverable }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">{{ about.artisans.eyebrow }} · The Living Hands</div>
+      <p class="body-lg text-muted" style="max-width:44rem;margin-bottom:3rem">{{ about.artisans.lede }}</p>
+      <div class="grid grid-3">
+        <article class="pillar-card" v-for="a in about.artisans.items" :key="a.name">
+          <div class="pillar-media"><img :src="a.image" :alt="a.name"/></div>
+          <div class="pillar-body">
+            <p class="label-caps text-primary">{{ a.years }}</p>
+            <h3 class="headline-sm text-alabaster">{{ a.name }}</h3>
+            <p class="label-caps text-muted">{{ a.role }}</p>
+            <p class="body-sm text-muted" style="margin-top:.75rem">{{ a.bio }}</p>
+            <p class="technical-data text-primary" style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--hairline)">{{ a.specialty }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2" style="gap:var(--space-xl)">
+      <div>
+        <div class="eyebrow-rule label-caps">{{ about.standards.eyebrow }} · The Vault Guarantee</div>
+        <h2 class="headline-md text-alabaster">{{ about.standards.title }}</h2>
+      </div>
+      <table class="spec-table">
+        <tbody><tr v-for="r in about.standards.rows" :key="r.label"><td class="label-caps">{{ r.label }}</td><td class="body-sm">{{ r.value }}</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="text-align:center;max-width:44rem">
+      <h2 class="headline-md text-alabaster" style="margin-bottom:1rem">{{ about.consultation.title }}</h2>
+      <p class="body-lg text-muted" style="margin-bottom:2rem">{{ about.consultation.desc }}</p>
+      <div class="flex gap-md" style="justify-content:center;flex-wrap:wrap">
+        <router-link to="/contact" class="btn btn-primary">{{ about.consultation.primary }}</router-link>
+        <router-link to="/gallery" class="btn btn-secondary">{{ about.consultation.secondary }}</router-link>
+      </div>
+    </div>
+  </section>
+</div>
+</script>
+
+<!-- ==================== CONTACT ==================== -->
+<script type="text/x-template" id="tpl-contact">
+<div>
+  <section class="page-hero">
+    <div class="container">
+      <p class="label-caps text-primary" style="margin-bottom:1rem">{{ contact.hero.eyebrow }}</p>
+      <h1 class="headline-lg text-alabaster" style="margin-bottom:1rem">{{ contact.hero.title }}</h1>
+      <p class="body-lg text-muted" style="max-width:44rem">{{ contact.hero.lede }}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow-rule label-caps">03 International Salons</div>
+      <div class="grid grid-3" style="margin-top:var(--space-lg)">
+        <article class="salon-card" v-for="s in contact.salons" :key="s.city">
+          <p class="label-caps text-primary">{{ s.num }}</p>
+          <h3 class="salon-city">{{ s.city }}</h3>
+          <p class="body-md" style="color:var(--on-surface-variant);margin-bottom:1.5rem">{{ s.address }}</p>
+          <div class="salon-detail"><span class="label-caps text-muted">Specialty</span><span class="body-sm text-alabaster">{{ s.atelier }}</span></div>
+          <div class="salon-detail"><span class="label-caps text-muted">Hours</span><span class="body-sm text-alabaster">{{ s.hours }}</span></div>
+          <div class="salon-detail" style="border-bottom:1px solid var(--hairline)"><span class="label-caps text-muted">Direct</span><a :href="'tel:' + s.phone.replace(/[^+\d]/g,'')" class="body-sm text-primary">{{ s.phone }}</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2" style="gap:var(--space-xl);align-items:start">
+      <div>
+        <div class="eyebrow-rule label-caps">{{ contact.form.eyebrow }}</div>
+        <h2 class="headline-md text-alabaster" style="margin-bottom:1.5rem">{{ contact.form.title }}</h2>
+        <p class="body-md text-muted" style="margin-bottom:2rem">{{ contact.form.desc }}</p>
+        <div class="guarantee-box" style="margin-top:0">
+          <p class="label-caps text-primary" style="margin-bottom:.75rem">{{ contact.protocol.title }}</p>
+          <p class="body-sm text-muted" style="margin-bottom:1rem">{{ contact.protocol.desc }}</p>
+          <p class="technical-data text-alabaster">PGP: {{ contact.protocol.pgp }}</p>
+        </div>
+        <div class="guarantee-box">
+          <p class="label-caps text-primary" style="margin-bottom:.75rem">Direct Concierge</p>
+          <a :href="'mailto:' + contact.liaison.email" class="body-sm text-alabaster">{{ contact.liaison.email }}</a><br/>
+          <span class="body-sm text-muted">Private Desk · {{ contact.liaison.phone }}</span>
+        </div>
+      </div>
+
+      <form @submit.prevent="submit" class="flex flex-col gap-md">
+        <div class="form-field"><input id="c-name" type="text" class="form-input" placeholder=" " v-model="form.name" required/><label for="c-name" class="form-label">Full Name & Honorific</label></div>
+        <div class="form-field"><input id="c-email" type="email" class="form-input" placeholder=" " v-model="form.email" required/><label for="c-email" class="form-label">Confidential Email</label></div>
+        <div class="form-field"><input id="c-phone" type="tel" class="form-input" placeholder=" " v-model="form.phone"/><label for="c-phone" class="form-label">Telephone / Private Desk (Optional)</label></div>
+        <div class="form-field">
+          <select id="c-disc" class="form-select" v-model="form.discipline" required>
+            <option value="" disabled></option><option v-for="o in contact.form.disciplines" :key="o">{{ o }}</option>
+          </select><label for="c-disc" class="form-label">Discipline of Interest</label>
+        </div>
+        <div class="form-field">
+          <select id="c-salon" class="form-select" v-model="form.salon" required>
+            <option value="" disabled></option><option v-for="o in contact.form.salonOptions" :key="o">{{ o }}</option>
+          </select><label for="c-salon" class="form-label">Preferred Salon</label>
+        </div>
+        <div class="form-field">
+          <select id="c-time" class="form-select" v-model="form.timeline" required>
+            <option value="" disabled></option><option v-for="o in contact.form.timelines" :key="o">{{ o }}</option>
+          </select><label for="c-time" class="form-label">Desired Timeline</label>
+        </div>
+        <div class="form-field"><textarea id="c-vision" class="form-textarea" placeholder=" " v-model="form.vision"></textarea><label for="c-vision" class="form-label">Bespoke Vision, Technical Complications or Gemstone Preferences</label></div>
+        <label class="form-check">
+          <input type="checkbox" v-model="form.consent" required/><span class="form-check-box"></span>
+          <span class="body-sm text-muted">I understand this inquiry is governed by strict banking confidentiality protocols. Atelier Vauquelin does not divulge client identities or commission registries under any commercial circumstance.</span>
+        </label>
+        <div class="flex gap-md items-center" style="margin-top:1rem;flex-wrap:wrap">
+          <button type="submit" class="btn btn-primary">Dispatch Commission <span class="material-icons-outlined" style="font-size:1rem">arrow_forward</span></button>
+          <span class="technical-data text-muted">Ref: VQL-SALON-DISPATCH-2025</span>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+</script>
+
+<!-- ==================== DASHBOARD LAYOUT ==================== -->
+<script type="text/x-template" id="tpl-dash">
+<div>
+  <div v-if="!unlocked" class="gate container">
+    <div class="gate-card">
+      <p class="label-caps text-primary" style="margin-bottom:1rem">House Console · Restricted</p>
+      <h1 class="headline-md text-alabaster">Enter the Vault</h1>
+      <form @submit.prevent="unlock"><input v-model="code" type="password" class="adm-input" placeholder="Passcode"/></form>
+      <button class="adm-btn adm-btn-solid" @click="unlock" style="margin-top:.5rem">Unlock Console</button>
+    </div>
+  </div>
+  <div v-else class="container dash-layout">
+    <aside class="sidebar">
+      <p class="label-caps sidebar-title">House Console</p>
+      <router-link to="/dashboard/home" class="sidebar-link"><span class="material-icons-outlined" style="font-size:1.1rem">home</span>Home Page</router-link>
+      <router-link to="/dashboard/about" class="sidebar-link"><span class="material-icons-outlined" style="font-size:1.1rem">menu_book</span>About Page</router-link>
+      <router-link to="/dashboard/contact" class="sidebar-link"><span class="material-icons-outlined" style="font-size:1.1rem">mail</span>Contact Page</router-link>
+      <router-link to="/dashboard/products" class="sidebar-link"><span class="material-icons-outlined" style="font-size:1.1rem">diamond</span>Products</router-link>
+    </aside>
+    <div><router-view :key="$route.fullPath"/></div>
+  </div>
+</div>
+</script>
+
+<!-- ==================== DASH: HOME ==================== -->
+<script type="text/x-template" id="tpl-dash-home">
+<div>
+  <div class="savebar">
+    <span class="label-caps text-alabaster">Home Page Content</span>
+    <div class="flex gap-sm">
+      <button class="adm-btn" @click="discard">Discard</button>
+      <button class="adm-btn adm-btn-solid" @click="save">Save & Publish</button>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Hero</h3><p class="adm-card-sub body-sm">Opening statement of the House.</p>
+    <field-text label="Eyebrow" v-model="draft.hero.eyebrow"/>
+    <field-area label="Title (use line break for two lines)" v-model="draft.hero.title"/>
+    <field-area label="Introduction" v-model="draft.hero.lede"/>
+    <field-image label="Hero Image URL" v-model="draft.hero.image"/>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Workshop Craft Statistics</h3><p class="adm-card-sub body-sm">Four technical proof-points.</p>
+    <div class="adm-item" v-for="(s, i) in draft.stats" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.stats.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Value" v-model="s.value"/>
+        <field-text label="Label" v-model="s.label"/>
+      </div>
+      <field-area label="Description" v-model="s.desc"/>
+    </div>
+    <button class="adm-btn" @click="draft.stats.push({value:'',label:'',desc:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Statistic</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Tripartite Portfolio</h3><p class="adm-card-sub body-sm">Featured archetypes on the home page.</p>
+    <field-text label="Section Eyebrow" v-model="draft.portfolio.eyebrow"/>
+    <field-text label="Section Title" v-model="draft.portfolio.title"/>
+    <field-area label="Section Lede" v-model="draft.portfolio.lede"/>
+    <div class="adm-item" v-for="(p, i) in draft.portfolio.items" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.portfolio.items.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Number" v-model="p.num"/>
+        <field-text label="Category" v-model="p.dept"/>
+        <field-text label="Reference" v-model="p.ref"/>
+      </div>
+      <field-text label="Title" v-model="p.title"/>
+      <field-area label="Description" v-model="p.desc"/>
+      <div class="adm-grid2">
+        <field-text label="Tag" v-model="p.tag"/>
+        <field-image label="Image URL" v-model="p.image"/>
+      </div>
+    </div>
+    <button class="adm-btn" @click="draft.portfolio.items.push({num:'04',dept:'',ref:'',title:'',desc:'',tag:'',image:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Portfolio Piece</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Commission Call-to-Action</h3>
+    <field-text label="Eyebrow" v-model="draft.cta.eyebrow"/>
+    <field-area label="Title" v-model="draft.cta.title"/>
+    <field-area label="Description" v-model="draft.cta.desc"/>
+    <div class="adm-grid2">
+      <field-text label="Primary Button Label" v-model="draft.cta.primaryLabel"/>
+      <field-text label="Secondary Button Label" v-model="draft.cta.secondaryLabel"/>
+    </div>
+    <field-image label="Image URL" v-model="draft.cta.image"/>
+  </div>
+</div>
+</script>
+
+<!-- ==================== DASH: ABOUT ==================== -->
+<script type="text/x-template" id="tpl-dash-about">
+<div>
+  <div class="savebar">
+    <span class="label-caps text-alabaster">About Page Content</span>
+    <div class="flex gap-sm">
+      <button class="adm-btn" @click="discard">Discard</button>
+      <button class="adm-btn adm-btn-solid" @click="save">Save & Publish</button>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Monograph Hero</h3>
+    <field-text label="Eyebrow" v-model="draft.hero.eyebrow"/>
+    <field-area label="Title" v-model="draft.hero.title"/>
+    <field-area label="Introduction" v-model="draft.hero.lede"/>
+    <div class="adm-grid2">
+      <div v-for="(s,i) in draft.hero.stats" :key="i" class="adm-item">
+        <button class="adm-remove material-icons-outlined" @click="draft.hero.stats.splice(i,1)">close</button>
+        <field-text label="Value" v-model="s.value"/><field-text label="Label" v-model="s.label"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Philosophy</h3>
+    <field-text label="Eyebrow" v-model="draft.philosophy.eyebrow"/>
+    <field-text label="Title" v-model="draft.philosophy.title"/>
+    <div class="adm-item" v-for="(p,i) in draft.philosophy.paragraphs" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.philosophy.paragraphs.splice(i,1)">close</button>
+      <field-area :label="'Paragraph ' + (i+1)" v-model="draft.philosophy.paragraphs[i]"/>
+    </div>
+    <button class="adm-btn" @click="draft.philosophy.paragraphs.push('')"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Paragraph</button>
+    <div style="margin-top:1.5rem;border-top:1px solid var(--hairline);padding-top:1.5rem">
+      <field-area label="Quote" v-model="draft.philosophy.quote.text"/>
+      <field-text label="Quote Attribution" v-model="draft.philosophy.quote.attribution"/>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">The Four Pillars</h3>
+    <field-text label="Eyebrow" v-model="draft.pillars.eyebrow"/>
+    <field-area label="Lede" v-model="draft.pillars.lede"/>
+    <div class="adm-item" v-for="(m,i) in draft.pillars.items" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.pillars.items.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Craft No." v-model="m.num"/>
+        <field-text label="Craft" v-model="m.craft"/>
+        <field-text label="Spec Line" v-model="m.spec"/>
+      </div>
+      <field-text label="Title" v-model="m.title"/>
+      <field-area label="Description" v-model="m.desc"/>
+      <field-image label="Image URL" v-model="m.image"/>
+    </div>
+    <button class="adm-btn" @click="draft.pillars.items.push({num:'05',craft:'',title:'',desc:'',spec:'',image:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Craft</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Chronology of Creation</h3>
+    <field-text label="Eyebrow" v-model="draft.timeline.eyebrow"/>
+    <field-area label="Lede" v-model="draft.timeline.lede"/>
+    <div class="adm-item" v-for="(t,i) in draft.timeline.items" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.timeline.items.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Months" v-model="t.months"/>
+        <field-text label="Phase" v-model="t.phase"/>
+        <field-text label="Title" v-model="t.title"/>
+      </div>
+      <field-area label="Description" v-model="t.desc"/>
+      <field-text label="Deliverable Line" v-model="t.deliverable"/>
+    </div>
+    <button class="adm-btn" @click="draft.timeline.items.push({months:'',phase:'',title:'',desc:'',deliverable:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Phase</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">The Workshop Masters</h3>
+    <field-text label="Eyebrow" v-model="draft.artisans.eyebrow"/>
+    <field-area label="Lede" v-model="draft.artisans.lede"/>
+    <div class="adm-item" v-for="(a,i) in draft.artisans.items" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.artisans.items.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Years" v-model="a.years"/>
+        <field-text label="Name" v-model="a.name"/>
+        <field-text label="Role" v-model="a.role"/>
+      </div>
+      <field-area label="Biography" v-model="a.bio"/>
+      <field-text label="Specialty Line" v-model="a.specialty"/>
+      <field-image label="Portrait URL" v-model="a.image"/>
+    </div>
+    <button class="adm-btn" @click="draft.artisans.items.push({years:'',name:'',role:'',bio:'',specialty:'',image:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Artisan</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">House Standards</h3>
+    <field-text label="Eyebrow" v-model="draft.standards.eyebrow"/>
+    <field-text label="Title" v-model="draft.standards.title"/>
+    <div class="adm-item" v-for="(r,i) in draft.standards.rows" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.standards.rows.splice(i,1)">close</button>
+      <div class="adm-grid2">
+        <field-text label="Attribute" v-model="r.label"/>
+        <field-area label="Value" v-model="r.value"/>
+      </div>
+    </div>
+    <button class="adm-btn" @click="draft.standards.rows.push({label:'',value:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Standard</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Closing Consultation Block</h3>
+    <field-text label="Title" v-model="draft.consultation.title"/>
+    <field-area label="Description" v-model="draft.consultation.desc"/>
+    <div class="adm-grid2">
+      <field-text label="Primary Button" v-model="draft.consultation.primary"/>
+      <field-text label="Secondary Button" v-model="draft.consultation.secondary"/>
+    </div>
+  </div>
+</div>
+</script>
+
+<!-- ==================== DASH: CONTACT ==================== -->
+<script type="text/x-template" id="tpl-dash-contact">
+<div>
+  <div class="savebar">
+    <span class="label-caps text-alabaster">Contact Page Content</span>
+    <div class="flex gap-sm">
+      <button class="adm-btn" @click="discard">Discard</button>
+      <button class="adm-btn adm-btn-solid" @click="save">Save & Publish</button>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Page Introduction</h3>
+    <field-text label="Eyebrow" v-model="draft.hero.eyebrow"/>
+    <field-text label="Title" v-model="draft.hero.title"/>
+    <field-area label="Introduction" v-model="draft.hero.lede"/>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">International Salons</h3>
+    <div class="adm-item" v-for="(s,i) in draft.salons" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.salons.splice(i,1)">close</button>
+      <div class="adm-grid3">
+        <field-text label="Number / District" v-model="s.num"/>
+        <field-text label="City" v-model="s.city"/>
+        <field-text label="Phone" v-model="s.phone"/>
+      </div>
+      <field-text label="Address" v-model="s.address"/>
+      <div class="adm-grid2">
+        <field-text label="Specialty" v-model="s.atelier"/>
+        <field-text label="Hours" v-model="s.hours"/>
+      </div>
+    </div>
+    <button class="adm-btn" @click="draft.salons.push({num:'',city:'',address:'',atelier:'',hours:'',phone:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Salon</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Confidential Protocol & Liaison</h3>
+    <field-text label="Protocol Title" v-model="draft.protocol.title"/>
+    <field-area label="Protocol Description" v-model="draft.protocol.desc"/>
+    <field-text label="PGP Fingerprint" v-model="draft.protocol.pgp"/>
+    <div class="adm-grid2">
+      <field-text label="Concierge Email" v-model="draft.liaison.email"/>
+      <field-text label="Private Desk Phone" v-model="draft.liaison.phone"/>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Commission Form Copy & Options</h3>
+    <field-text label="Form Eyebrow" v-model="draft.form.eyebrow"/>
+    <field-text label="Form Title" v-model="draft.form.title"/>
+    <field-area label="Form Description" v-model="draft.form.desc"/>
+    <list-strings label="Discipline Options" v-model="draft.form.disciplines"/>
+    <list-strings label="Preferred Salon Options" v-model="draft.form.salonOptions"/>
+    <list-strings label="Timeline Options" v-model="draft.form.timelines"/>
+  </div>
+</div>
+</script>
+
+<!-- ==================== DASH: PRODUCTS LIST ==================== -->
+<script type="text/x-template" id="tpl-dash-products">
+<div>
+  <div class="savebar">
+    <span class="label-caps text-alabaster">Product Registry · {{ store.data.products.length }} Pieces</span>
+    <router-link to="/dashboard/products/new" class="adm-btn adm-btn-solid"><span class="material-icons-outlined" style="font-size:1rem">add</span>Register New Piece</router-link>
+  </div>
+
+  <div class="adm-card" v-for="key in deptOrder" :key="key">
+    <h3 class="adm-card-title">Category {{ departments[key].num }} · {{ departments[key].name }}</h3>
+    <p class="adm-card-sub body-sm">Category introduction text shown at the top of its gallery section.</p>
+    <div class="adm-grid2">
+      <field-text label="Section Title" :model-value="departments[key].title" @update:model-value="v => setDept(key,'title',v)"/>
+      <field-text label="Certification Line" :model-value="departments[key].cert" @update:model-value="v => setDept(key,'cert',v)"/>
+    </div>
+    <field-area label="Category Description" :model-value="departments[key].desc" @update:model-value="v => setDept(key,'desc',v)"/>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">All Registered Pieces</h3>
+    <table class="adm-table">
+      <thead><tr><th></th><th>Piece</th><th>Category</th><th>Price</th><th style="text-align:right">Actions</th></tr></thead>
+      <tbody>
+        <tr v-for="p in store.data.products" :key="p.id">
+          <td style="width:70px"><img class="adm-thumb" :src="p.image" alt=""/></td>
+          <td>
+            <router-link :to="'/gallery/' + p.id" class="body-sm text-alabaster">{{ p.title }}</router-link><br/>
+            <span class="technical-data text-muted">{{ p.ref }}</span>
+          </td>
+          <td><span class="label-caps text-primary">{{ deptName(p.department) }}</span></td>
+          <td class="body-sm">{{ p.price }}</td>
+          <td style="text-align:right;white-space:nowrap">
+            <router-link :to="'/gallery/' + p.id" class="adm-btn" style="margin-right:.5rem">View</router-link>
+            <router-link :to="'/dashboard/products/' + p.id" class="adm-btn" style="margin-right:.5rem">Edit</router-link>
+            <button class="adm-btn adm-btn-danger" @click="remove(p)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</script>
+
+<!-- ==================== DASH: PRODUCT FORM ==================== -->
+<script type="text/x-template" id="tpl-dash-product-form">
+<div>
+  <div class="savebar">
+    <span class="label-caps text-alabaster">{{ isNew ? 'Register New Piece' : 'Edit Piece · ' + draft.ref }}</span>
+    <div class="flex gap-sm">
+      <router-link to="/dashboard/products" class="adm-btn">Cancel</router-link>
+      <button class="adm-btn adm-btn-solid" @click="save">{{ isNew ? 'Register Piece' : 'Save Changes' }}</button>
+    </div>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Identity</h3>
+    <div class="adm-grid3">
+      <div class="adm-field"><span class="adm-label">Category</span>
+        <select class="adm-select" v-model="draft.department">
+          <option v-for="k in deptOrder" :key="k" :value="k">Category {{ departments[k].num }} · {{ departments[k].name }}</option>
+        </select>
+      </div>
+      <field-text label="Reference" v-model="draft.ref"/>
+      <field-text label="Category Tag" v-model="draft.tag"/>
+    </div>
+    <field-text label="Title" v-model="draft.title"/>
+    <field-area label="Description" v-model="draft.desc"/>
+    <div class="adm-grid2">
+      <field-text label="Price" v-model="draft.price"/>
+      <field-text label="Provenance / Delivery Note" v-model="draft.note"/>
+    </div>
+    <field-image label="Image URL" v-model="draft.image"/>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Technical Specifications</h3>
+    <p class="adm-card-sub body-sm">Rendered as the specification table on the piece dossier.</p>
+    <div class="adm-item" v-for="(s,i) in draft.specs" :key="i">
+      <button class="adm-remove material-icons-outlined" @click="draft.specs.splice(i,1)">close</button>
+      <div class="adm-grid2">
+        <field-text label="Attribute (e.g. Caliber)" v-model="s.k"/>
+        <field-text label="Value" v-model="s.v"/>
+      </div>
+    </div>
+    <button class="adm-btn" @click="draft.specs.push({k:'',v:''})"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Specification</button>
+  </div>
+
+  <div class="adm-card">
+    <h3 class="adm-card-title">Acquisition</h3>
+    <div class="adm-grid2">
+      <field-text label="Button Label" v-model="draft.ctaLabel"/>
+      <field-text label="External Checkout URL (optional)" v-model="draft.href"/>
+    </div>
+    <p class="technical-data text-muted">If no URL is provided, the button routes clients to the Contact commission form.</p>
+  </div>
+</div>
+</script>
+
+<!-- ==================== APP SHELL ==================== -->
+<script type="text/x-template" id="tpl-app">
+<div>
+  <app-header/>
+  <main><router-view v-slot="{ Component }"><transition name="fade" mode="out-in"><component :is="Component"/></transition></router-view></main>
+  <app-footer/>
+  <div class="toast" :class="{show: toastState.visible}">{{ toastState.msg }}</div>
+</div>
+</script>
+
+<!-- ==================== APPLICATION ==================== -->
+<script>
+const { createApp, defineComponent, reactive, computed } = Vue;
+const { createRouter, createWebHashHistory } = VueRouter;
+
+/* ---------------- helpers ---------------- */
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => 'p-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const toastState = reactive({ visible: false, msg: '' });
+let toastTimer;
+function toast(msg) {
+  toastState.msg = msg; toastState.visible = true;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastState.visible = false, 2600);
+}
+
+/* ---------------- seed content ---------------- */
+const IMG = {
+  hero: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3uqmJpGApdE0DbFOIY5GcWCqotXogYhz3IES4QUfe-VM-S2eFzmkYrENcHB5gvc4ylgnuOaw0GYR2hSrYQm6KINnWfyX44nASldBdGE5I1M7OspdKRNfSdxLH3v8R1ZVZ9R23DzxuwZzSYZVJZLWjsoHe8vfPlTaO4X7_A4xb1flA__tOLNOHi7h9oySTzTOlKrkb-7vQxpzzVy649iPGYpBXA8KYKGzk0NJ6S7MPmtf7UzLxKwib',
+  ring: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDPV3Sf4ARrIjq3UpQ9JAw1NJ7Lxw5jK2Fu2zf7-g8RF6KVyHLWXpCvpu1EZyijzII_9L5fCMi2o2Xbn0Y4t73xPXfJjlkamxoZlXDE_HKTfqjFKhcxm7Alb6JalDJPBbJ2fhMxX5gecfdaquOhlxaPOGB7Xyyh6M59WU2Haz8QrbtOVreeFETqbzOn11tCI4VTEB8nR2PtW4Z_tHrV-5Ktn8kKONAruaxa3UwOsn8i1bBt6YLOWGDf',
+  strap: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCluLo9ESWy0oXR4dPyvcm5LewAb-zgriYUHNm88FosuMdwd8nkcCuTsgi8A1DnP_sOfp8ZYH0l48QVqx_W2WcpuWXCxSQ1uetWWNZGgwBvtR2oNLVPsTK6SWGCvvC39_NRPT-3FSH0nDLheW92fNX_WHtIGZsdrRcx04EuQI_8irhQd1it6l4wdWfFmGjdAj3olx6jn1hr7Tryr-daMdLWH3uN2oCd5W4ZQ1BraU_wbuf2hpF0kWpo',
+  w1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCD5u7emQd94AeBec3A6_QFn77uiHx1367Rpg_9sFj3QJC_4maO-bzLXWTnctHsXGfrtDK8i7LmEjrCn1jDHSKUWKHMtLI4pY_xeYVENFT2RRUQAWiS4Mk0VrUT1ELU0gn8LQQ5vKAaymgjxuEjbIIKhqMD_-RpwbUTEx_VUYRPkggLaEh4AqBG7BSj-eKx0ERWs4Rg9tjHr7U7d57imIMGjjqQMYDXzaTAO0_GDFJTyCl3m399Tv7e',
+  w2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCIddUhcAxLij2IZsrHwOKk7sS3domHpZrc2cu3JMIruOoTYnYVdta9PDpccnxu_EBYTJLwQGAk5W2-1dLZDPN7vMidlOUQUNT4ez9AX6ntNBf4rND_ecqHacIe-kW21Tv34U5AhHRDb43hFSqaTDo7Z7Z64n4kYbevE2JxqVgOefKkqQ-oHH-t1e4V_DOHg7smCIglCTIXvDAt0n_hIlkxcMq1ha5nESiXB40rPbGWzlO7oP9j8-nn',
+  w3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAB1No8kG2htKt2Wv9PqXRK-GkYZrwhhvcFTWnPLvxyFHP0NCxTIE3OFVngB7aasvzcX8ACvejlwd9cX0oEyuBbC4ltuiqGlOK8qj6RHqKV_IWBHUIQnw1L1s0ao01NAaulh3AeBn4PmSQmX08w4nRlWu83T0NIQcQA-zT6uE0c_1z6FoMmTb6uz119cfHiNl2vbEfutjZX3tZVEVLHMH7Af-LFZgjX-KBIi8vWy_V2mhZh0Fln860n',
+  r1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBW8cgpOiqomzgZ8zxF0J_FIFWrh-exwMOyKPNe2qaL5ncOqdlBAotAd1wQe4c83tCK82h10pzI4Owxps6ykBoYxVdObHcy7--cdQhdSRYdOoICobdvbcaW9_bBPvjyCvsiGFQhe2FNDI7AVFdxdjFFzvJZywEC68q3F1OyZ_Fu9rkXEFmM4wApFr6LIkqnD6pg_Y1rniVfn7OJYeO07sGSCvfX2rRhSRnJ7WAz0Rl7x08BF1Q4WwWj',
+  r2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-51oP2zY4Qrk1UNhrKX9i5DF2NEjQawZFopOh35_oub9Zl9e-xPqAyq4cQJ9_WCbG425qmJHyJOyG_e6AGMUyxT9c6IvjM7cqrk3rZ-2OeHDzD4PT6s8wOGr0TdIwMj1LCgCispBZoDon4mTU-OT3iJU3RgXgELXe9VKLRVQ-wt3xFzjGKtU5CbnU547cuk4YLVhQnoXfVdivIgEgNYh0KJqim4fjpEwuy8HZbdzPC1girktiST0J',
+  r3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkSLbK9gv--AFh8uyvzwblM5fOxmlRY1GdLNbdOleFhUnFZT2xDSfn5L7OHko3jxNDjPMkivN5kdQ5EhAATNdIV2adK0VpP4O721D0Fs3PC18szaScy2KxFnaDdqNHAGxTHuPDl0dE1BEr2I_2spya3F5Imp3Iix_X9y5Kxz9SXT9Hi8OsAwCdBLboS8u1f2htJhVsiu5XKGwCp4DG_AvO1jG5TFGbJlAi7Kk4CQc4tC6Wfu5PxWj_',
+  s1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3wbGB6dIqUR47fwrUBwqWuPHeN0Vp3I8xP0gyXoTJwjFLdjqwrJgGpX3Qt0PiJ_aMBp2MWiVtLdiuHONF5NKf6cTWNo40F-HVTBz4VrTXP6-99TdeCcnHpHuUj1H1YL3Q93s40guxt0bNESBrLbLH0g6uexgjHNKu8qTgzYyU06sfekqSGn4_R5XH5KsMLUkS33J9covbA5i2OhFl41Izoxx6vCzWlvabddl7nzyjCTqJyfk86HAB',
+  s2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCx6c8YfWG0CUVFn2kZGa3PTBRvBrDG-raHbHINQlL7T4WxISJuAFyUf-2BxzR37ybXUsjH1FSExvrj8NfzNO_jHT1ibeCmqHoqj3lpiipOlxS-N1tK2DbA94ejK8bMUInJ_Xp_SZeINRSRAz9Ge-PmKd6qrh5wbJXDbN63d6Lxl9j8ceiMyGLN11tC_UZ41aqDgZOjegIF7KqmjYOBp8Kx7qMb82KUAPobBzsFDIpYe2ehD6v2kRiq',
+  s3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC_pCyWlEwNjHWIVFxCY1gk2OphMQAS4eoIwhr5UddUnp9v8x410GhLXIWZpEbqRFYV85SU8d-99G-sidDv041ZBAkbOrc-k6hMbZ6vr1jdyfYrvbHWniwQg9wkkxRtlACXvyrO6g07DflcLeq5rn1mffPpjOxgEBjqmQCmsQYXWI9_DOG28FSkJu3MTnkhb6EMhr4lon0YCrjG6wTE-8cMy6KOMDxxZbC-vWa_Fa6I_ZF7PEqhBbcE',
+  a1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCKtlTGOUMef2_gzKk2pbRruQpeUl20uBjwPRMrrdNPVnCnNopnCmm5ZnuyhOGdKXixj1yAu_1HuZhIbxUwM22HsEz9-eN8Yz63ZkhmndQJ-9OQ7Ou8TqyTWSDA-4O9zycwQWrzqbX1Gq0h6nUQSHEOQbgM2cJDGXk3WjtzMnBOIEXVNCUgjdQR1JsPxQaYuSq9h7UoQjoy1IY1597tc6z1uaIivlxM6kiqLlhgh2-b6yGmS6KZB0Ch',
+  a2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfkmd6jelN9UcPCrpuSBnR23AD1op9EP7GXhQ9KCdlEHe-_Uz4f8DRoFhmTB3hRdl4GUVojv67d3rlo_tMpHtnGffNQZavChaZgETo05QM6zkuTB8UYgTVu_jiruCumMiA4d0njEOYbGIBgqnqZ8drAK0ysxD1QXjzCvSl7L1p4B0S8Dj0fEqqPrrSfgbdSLCSnxF9KlVTuDBuKRIuKGxDwz_KwPPGg5HyvXSjtrZMOF0cNWFXzM-b',
+  a3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBnb3ED91XDrVa-MhTXS-rajAgvh0mCuyhjDYpakSUuiJhcMz18Sgq4ODQ2neDZFALPhtN4TGPiBWRHFSledCd01t9jkzYKo2xm1Ml0fnW81V6PYCCkDYcLHPz39GlYKU0cpauXWVNEJ0FQYoCo-t6O8DjeLZFlGMNLqqj9hvHRi_IhPkMtTx4dEkohIo1iPmB1Fb2Fci6Zd_jiQasS1P7dQCo2_AXRyn_g-g3Cn_h9xfmPVFl0vuW',
+  m1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWtIiIzBmdIIEU1nda2ZHDhEI0Z9SNqsmjco51G2Ba9vydBV3IbNK-bp7SC0pTQtq7QG_tunDqW1ALyWo0CviCHs4Nrfe3ro95g6zCJS8tcwtIVaT0rDnKzC_i32OePtHV8fk61voqjszWu0ivATynSjthxEHxWgZQclWmQinLLH2_hd79alZ4lO0-142k4SKqajc2nU7B9dni7JlfbK7HtGx7jreKoVg2IzaP7EezSu8K-SVS7JMj',
+  m2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBy-oJwHZMXy95wC9oXOZ8wzTKhpJnyCxs1_F3I8DCbo1YmQy7SMZDLdRRAbXcDb4YqWMX-Roa5u6kbxv_9tyDZ4UAkg0p5lVsTdUqEu5Y9HTX-NGBkGqu1oSocD6l0qYql3vJSwkVtjGP2dtpLGHP6yqIF0WnYOAMBBjUmgn9EXhfEIsAMUu4kQ1bXzQ8v3aW7NZFmN50G0azrHqP5SO4Dk81FrSWGRM2EBegywj8_ajtj8bhZkQ3r',
+  m3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuApx9kF3447l9dwzsZXqf_N_zNAndfTm763S47ZpoYYDfXdQoVIaQ60S-Ebm2aSHMqEK_kpcdLlx4K5_HPm-I8ug0rmO-1HCB_117l190zsE4hbG3_chOl38CnNYdBi8RRWdIb9Q3ZcqsJyjrS8gfUb1EieN1w8c6DwO30IN4qeHdpE6-wdis_bVodO0-T8BvBEtxaTM3oINSZrXr_rLvwRnGzMHslZ17CqOykkczy3a77Vwa0khDuI',
+  m4: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCq3bQfku2bA4wEv-KScjEyS2sEeQDtsetBnjV-urcBBhPAop3FKoGZv1ssOV4aRY4PH580V0X2PlYGS24cM0G8deN5wbB65f1LIpi9osCzkoQaaQeMg9LSooqby5OrOXhdoahj72ueDMcl2q51qgUKPxNt_sBVlMQfGrAKlntF1xHvNGbST0OynTx1Fawg-ufcrpsE0lGj6RdqA8IWduHNFJeSEcAtHO2zHtV05KGDinQn0QIdZM7S'
+};
+
+const DEFAULTS = {
+  site: { brand: 'Atelier Vauquelin', tagline: 'Fine Watchmaking & Jewelry' },
+  home: {
+    hero: {
+      eyebrow: 'PLACE VENDÔME, PARIS VIII — EST. 1889',
+      title: 'House Founded\nin Paris • 1889',
+      lede: 'Bespoke fine watchmaking, high jewelry & premium leathercraft. Where centuries-old Swiss chronometry converges with lapidary mastery and unhurried artisanal leathercraft. Handcrafted in strict editions of seven.',
+      image: IMG.hero
+    },
+    stats: [
+      { value: '±0.5s', label: 'Movement Tolerance / day', desc: 'Tested across 6 positions and 3 distinct thermal zones over 360 continuous hours.' },
+      { value: '140hrs', label: 'Hand Beveling', desc: 'Anglage and straight-grain finishing completed using gentian wood pegs and diamond paste.' },
+      { value: '5N', label: 'Precious Alloy Gold', desc: 'Sustainably sourced 18k pink gold alloy formulated exclusively for Vauquelin cases.' },
+      { value: '24', label: 'Annual Allocation pcs', desc: 'Exclusively commissioned and individually numbered for collector clients worldwide.' }
+    ],
+    portfolio: {
+      eyebrow: 'House Catalogue, Volume VII',
+      title: 'The Tripartite Portfolio',
+      lede: 'Three archetypes representing the pinnacle of mechanical precision, high gemology, and saddlery hand-stitching.',
+      items: [
+        { num: '01', dept: 'Bespoke Watches', ref: 'Ref. VQ-H091', title: 'Imperial Skeleton Tourbillon', desc: 'Sculpted from a single ingot of rose gold. Micro-engraved bridges featuring hand-beveled internal angles and heat-blued screws.', tag: 'Edition of 7', image: IMG.hero },
+        { num: '02', dept: 'Rings', ref: 'Ref. HJ-SL38', title: 'Solstice Emerald-Cut Ring', desc: 'A pure architectural band in 950 platinum. Featuring an exceptional Type IIa central diamond of unmatched crystal clarity.', tag: 'Bespoke Fitting', image: IMG.ring },
+        { num: '03', dept: 'Straps', ref: 'Ref. MC-SC12', title: 'Glazed Cordovan Watch Strap', desc: 'Six months of vegetable immersion tanning finished with hand-waxed linen thread using 18th-century French saddlery techniques.', tag: 'Custom Taper & Length', image: IMG.strap }
+      ]
+    },
+    cta: {
+      eyebrow: 'Direct Client Advisory',
+      title: 'Commission Your\nSingular Masterwork',
+      desc: 'Every Vauquelin timepiece or jewelry piece begins with a private consultation with our master watchmaker and chief gemologist. We configure movement geometry, precious stone provenance, and monogrammed leather accoutrements to your exact client specifications.',
+      primaryLabel: 'Request Private Audience', secondaryLabel: 'The House Monograph', image: IMG.hero
+    }
+  },
+  about: {
+    hero: {
+      eyebrow: 'Monograph No. 04 — The Origins & The Workshop · Geneva • Paris • Tokyo',
+      title: 'Founded in 1894 — Place Vendôme',
+      lede: 'The architecture of perpetual seconds. Atelier Vauquelin rejects algorithmic haste. Within our stone vaults in Geneva and salons along Place Vendôme, we craft fewer than eighty chronometric instruments and bespoke jewels each calendar cycle.',
+      stats: [{ value: '78', label: 'Annual Allocation Pieces' }, { value: '± 0.4s', label: 'Tolerance / 24h' }]
+    },
+    philosophy: {
+      eyebrow: 'Chapter I — The Double Anchor · 1894 — Present',
+      title: 'The House Philosophy',
+      paragraphs: [
+        'Founded along the quiet arc of Rue de la Paix before establishing our permanent watchmaking bench in the canton of Geneva, Maison Vauquelin has safeguarded a single, uncompromising tenet: the machine must never eclipse the hand. While industrial watchmaking surrendered to computerized five-axis milling and mass assembly lines during the mid-20th century, our watchmakers deliberately hid their original rose-engine lathes and boxwood lapidary disks.',
+        'Every dial bearing the Vauquelin mark is individually engine-turned using a manually powered 1904 guilloché machine. Each circular barleycorn and Parisian hobnail furrow requires hundreds of uniform hand turns; a sneeze or an uneven wrist torque instantly ruins a week of work. This delicate fragility is our ultimate luxury.',
+        'In parallel, our Place Vendôme gemological workshop operates with the patience of mineralogists. Vauquelin holds a private vault of unheated Ceylon sapphires, Colombian emeralds, and Type IIa diamonds, some resting for two decades until an artisan sketches the exact setting worthy of their optical resonance. Our leather artisans, trained within the grand tradition of French saddlery, treat calfskin, Mississippi alligator, and cordovan shell with waxed linen thread using the two-needle saddle stitch — an architecture impervious to unraveling even after decades of continuous wrist wear.'
+      ],
+      quote: { text: 'Time is not something we measure to control. We enclose it in precious metals so that human devotion outlives memory.', attribution: 'Workshop Journal, 1921' }
+    },
+    pillars: {
+      eyebrow: 'The Four Pillars',
+      lede: 'Explore the microscopic interventions required to complete a single Vauquelin creation.',
+      items: [
+        { num: '01', craft: 'Watchmaking', title: 'Tourbillon Cage Filing', desc: 'Hand-sculpted from Grade 5 titanium. Each 0.28-gram carriage undergoes 32 hours of manual polishing with boxwood sticks and diamond pastes down to 0.5-micron grain.', spec: 'TOLERANCE: 0.002 MM', image: IMG.m1 },
+        { num: '02', craft: 'Jewelry', title: 'Descending Gem Setting', desc: 'Metal is hand-cut away with steel burins, eliminating visible prongs so each brilliant-cut stone appears suspended in liquid light across the platinum bezel.', spec: 'COLOR: D-E / CLARITY: IF', image: IMG.m2 },
+        { num: '03', craft: 'Leathercraft', title: 'Double Saddle Stitching', desc: 'No sewing machines are permitted. Straps are pierced by hand with a diamond awl and laced with twin needles. A broken thread will never unravel the seam.', spec: 'STITCH DENSITY: 9 / INCH', image: IMG.m3 },
+        { num: '04', craft: 'Dial-Making', title: 'Manual Rose-Engine Dial', desc: 'Cutting pure 18k solid gold or grand-feu enamel dials with mechanical cams and hand-applied rotational pressure, yielding organic reflections unattainable by CNC.', spec: 'ORIGIN: JURA, 1904 LATHE', image: IMG.m4 }
+      ]
+    },
+    timeline: {
+      eyebrow: 'The Chronology of Creation',
+      lede: 'From first graphite sketch on vellum to the vault registration in Geneva, each creation demands between 240 and 900 uninterrupted artisan hours.',
+      items: [
+        { months: 'Month 01 — 03', phase: 'Phase Alpha', title: 'Architectural Design', desc: 'Bespoke commissions begin with scale gouache drawings. The geometry of the case is tuned to the client\'s wrist ergonomics while kinetic movement simulations ensure gear-train integrity.', deliverable: 'DELIVERABLE: Scaled Gouache Plate' },
+        { months: 'Month 04 — 08', phase: 'Phase Beta', title: 'Decorative Arts & Metallurgy', desc: 'Ingots of proprietary honey gold or platinum are cast. Dials are engraved on rose-engine beds, and gems undergo rigorous spectroscopic verification before master cutters proceed.', deliverable: 'CRITERIA: 100% Conflict-Free Provenance' },
+        { months: 'Month 09 — 11', phase: 'Phase Gamma', title: 'Assembly & Refinishing', desc: 'A single master watchmaker assembles the complete caliber twice: first dry to test tolerances, followed by total disassembly, decorative chamfering, lubrication, and final casing.', deliverable: 'STANDARDS: Geneva Seal Protocol' },
+        { months: 'Month 12', phase: 'Phase Omega', title: 'Chronometry & Archive', desc: 'A 1,000-hour multi-positional chronometric validation test. The finished piece is sealed with its wax monogram, inscribed in the leather-bound Grand Register, and presented in salon.', deliverable: 'LIFETIME ARCHIVE: Geneva Vault Entry' }
+      ]
+    },
+    artisans: {
+      eyebrow: 'The Workshop Masters',
+      lede: 'Collectively, our five chief artisans represent over 160 years of preserved guild tradition across the Jura Valley and Place Vendôme.',
+      items: [
+        { years: '38 Years in the Workshop', name: 'Jean-Luc Sandoz', role: 'Master Watchmaker · Geneva', bio: 'Former director of grand complications at the Geneva School of Watchmaking. Oversees the Vauquelin Calibre V-894 Flying Tourbillon and perpetual calendar assemblies.', specialty: 'SPECIALTY: Hairspring terminal curves & dead-beat seconds', image: IMG.a1 },
+        { years: '24 Years in the Workshop', name: 'Éléonore de Marans', role: 'Master Gem Setter · Paris', bio: 'Trained in the high jewelry houses of Place Vendôme. Specializes in invisible channel settings and non-destructive mounting of rare antique faceted spinels.', specialty: 'SPECIALTY: Mystery settings & architectural bezels', image: IMG.a2 },
+        { years: '29 Years in the Workshop', name: 'Gilles Varenne', role: 'Master Leather Artisan · Paris', bio: 'Descendant of traditional equestrian saddle-makers in Limoges. Selects every hide from certified ethical tanneries in Tuscany and handles bespoke edge-creasing personally.', specialty: 'SPECIALTY: Hand edge-burnishing with beeswax & shellac', image: IMG.a3 }
+      ]
+    },
+    standards: {
+      eyebrow: 'House Standards', title: 'The Vault Guarantee',
+      rows: [
+        { label: 'Base Material', value: '18k Fairmined Honey Gold / 950 Pure Platinum / Grade 5 Titanium' },
+        { label: 'Finishing Tolerances', value: 'Hand beveling rounded to 45° mirror black polish without mechanical traces' },
+        { label: 'Gemological Traceability', value: 'Unheated natural stones accompanied by SSEF or Gübelin passports' },
+        { label: 'Chronometric Rate', value: 'Regulated in 6 positions over 42 days across 3 thermal gradients' },
+        { label: 'Archive Registration', value: 'Dual entry: hand-lettered parchment roll and cold-storage cryptographic record' }
+      ]
+    },
+    consultation: {
+      title: 'Converse with the bench.',
+      desc: 'We welcome collectors and clients by private appointment only. Consult our master watchmakers or commission a bespoke creation at our salons in Paris, Geneva, or Tokyo.',
+      primary: 'Request a Salon Appointment', secondary: 'Request the House Monograph'
+    }
+  },
+  contact: {
+    hero: {
+      eyebrow: 'Commission Dossier — Confidential Form · Swiss Registry',
+      title: 'Initiate a Bespoke Commission',
+      lede: 'Our master watchmakers and jewelers receive clients exclusively by appointment in Paris, Geneva, and Tokyo. For confidential requisitions, bespoke creations, or international salon viewings, our private liaison awaits.'
+    },
+    salons: [
+      { num: '01 / FIRST DISTRICT', city: 'Paris', address: '14, Place Vendôme, 75001 Paris, France', atelier: 'Master Watchmaker', hours: 'By appointment · UTC +01:00', phone: '+33 (0)1 42 68 91 00' },
+      { num: '02 / LES BASTIONS', city: 'Geneva', address: '42, Rue du Rhône, 1204 Geneva, Switzerland', atelier: 'Gem-Setting Workshop', hours: 'By appointment · UTC +01:00', phone: '+41 (0)22 310 84 20' },
+      { num: '03 / CHUO CITY', city: 'Tokyo', address: '6-10-1 Ginza, Chuo-ku, Tokyo 104-0061, Japan', atelier: 'Marquetry & Lacquer', hours: 'By appointment · UTC +09:00', phone: '+81 (0)3 6264 8833' }
+    ],
+    protocol: {
+      title: 'Confidential Protocol',
+      desc: 'For anonymous provenance inquiries, private museum loans, or ultra-rare gem commissions, connect via our end-to-end PGP key channel or private consular dispatch.',
+      pgp: '4A7F 90CE C581 12A0 BD88 64F9 E2B3'
+    },
+    liaison: { email: 'liaison@ateliervauquelin.ch', phone: '+41 79 982 44 11' },
+    form: {
+      eyebrow: 'Register Your Intent',
+      title: 'Kindly share the nuances of your commission.',
+      desc: 'Our Private Client Liaison will review your specifications with our Master Craftsman before replying. Salon concierge on standby · Liaison response under 18 hours.',
+      disciplines: ['Fine Watchmaking — Timepiece Commission', 'Bespoke Rings & High Jewelry Solitaire', 'Custom Leather Straps & Saddle-Stitched Watch Bands', 'Private Salon Appointment (Paris / Geneva / Tokyo)', 'General Curatorial Inquiry & Provenance Search'],
+      salonOptions: ['Paris — Place Vendôme', 'Geneva — Rue du Rhône', 'Tokyo — Ginza 6-Chome', 'Private Residence / International Liaison'],
+      timelines: ['Immediate Viewing (Within 14 Days)', 'Seasonal Commission (Next 3–6 Months)', 'Collector Horizon (6–18 Months)', 'Open / To Discuss With Advisory']
+    }
+  },
+  departments: {
+    rings: { num: '01', name: 'Rings', title: 'Sculptural Rings & Solitaires', desc: 'Architectural volumes chiseled from ethically certified fairmined gold, unheated Ceylon sapphires, and D-Flawless emerald-cut solitaires. Each band reconciles the purity of Brutalist geometry with the delicacy of traditional French claw and flush settings.', cert: 'CERTIFICATION: GIA & HRD · ORIGIN: SRI LANKA / KIMBERLEY · SETTING: HAND-BEZEL / PRONG' },
+    watches: { num: '02', name: 'Bespoke Watches', title: 'Bespoke Timepieces', desc: 'Meticulously regulated skeleton movements, suspended flying tourbillons, and hand-engraved 18k rose gold bridges. Each caliber is conceived as an architectural monument, requiring upwards of 340 hours of hand beveling and mirror-polishing by our master watchmakers in the Vallée de Joux.', cert: 'REGULATION: 5 POSITIONS · ALLOY: AU750 / 4N ROSE · GENEVA SEAL EQUIVALENT' },
+    straps: { num: '03', name: 'Straps', title: 'Bespoke Leather Straps', desc: 'Formed entirely by hand using the traditional double-needle French saddle stitch with waxed linen thread. Sourced exclusively from heritage French tanneries and Chicago cordovan vaults, lined with hypoallergenic Zermatt calfskin that preserves patina across decades.', cert: 'THREAD: WAXED LINEN · LINING: ZERMATT CALF · EDGE: MATTE BEESWAX BURNISHED' }
+  },
+  products: [
+    { id: 'p-prisme', department: 'rings', ref: '3.12ct D-IF · Platinum 950', tag: 'Exceptional Solitaire', title: 'The Prism — Emerald-Cut Solitaire', desc: 'Pure geometric form with stepped micro-pavé pavilion. Set with a certified conflict-free Type IIa crystalline diamond.', price: '€ 78,500', image: IMG.r1, specs: [{ k: 'Certification', v: 'GIA #2284910281' }, { k: 'Sizing', v: 'Bespoke 48 – 62 FR' }], note: 'SINGLE SPECIMEN', href: 'https://external-checkout.com/vauquelin-ring-prisme-solitaire-01', ctaLabel: 'Acquire Piece' },
+    { id: 'p-monolithe', department: 'rings', ref: '18k Gold · 14 Grams', tag: 'Architectural Band', title: 'Monolith Ring — Brutalist Band', desc: 'Brushed monolithic facets with interior comfort-curve fit. Accentuated by six flush-set inverted black diamonds.', price: '€ 9,400', image: IMG.r2, specs: [{ k: 'Mold', v: 'Hand-Carved Wax' }, { k: 'Width', v: '8.5mm' }], note: 'MADE TO MEASURE', href: 'https://external-checkout.com/vauquelin-ring-anneau-monolithe', ctaLabel: 'Acquire Piece' },
+    { id: 'p-nuitvendome', department: 'rings', ref: '4.80ct Unheated · Royal Blue', tag: 'High Jewelry', title: 'Vendôme Night — Royal Sapphire', desc: 'Accompanied by a Gübelin Gem Lab report confirming natural origin without indication of thermal treatment.', price: '€ 46,000', image: IMG.r3, specs: [{ k: 'Report', v: 'Gübelin #1904832' }, { k: 'Setting', v: '18k Grey Gold' }], note: 'IN SALON VAULT', href: 'https://external-checkout.com/vauquelin-ring-nuit-vendome-sapphire', ctaLabel: 'Acquire Piece' },
+    { id: 'p-squelette04', department: 'watches', ref: 'Unique Piece · No. 04/05', tag: 'High Complication', title: 'Flying Skeleton No. 04 — Openwork Tourbillon', desc: 'Sculpted from solid 18k 4N rose gold with hand-engraved acanthus bridges and blued hands. 41mm diameter, sapphire crystal box case with anti-reflective coating on both faces.', price: 'CHF 148,000', image: IMG.w1, specs: [{ k: 'Caliber', v: 'V-88 Manual' }, { k: 'Reserve', v: '72 Hours' }, { k: 'Frequency', v: '3 Hz / 21,600' }, { k: 'Caseback', v: 'Exhibition' }], note: 'DELIVERY WITHIN 6 WEEKS WITH CERTIFICATE', href: 'https://external-checkout.com/vauquelin-watch-squelette-volant-04', ctaLabel: 'Acquire Piece' },
+    { id: 'p-monopoussoir', department: 'watches', ref: 'Platinum 950 · Caliber V-31', tag: 'Single-Pusher Chronograph', title: 'Grand-Fire Enamel Single-Pusher V-02', desc: 'Enamel dial kiln-fired at 840°C. Pure platinum 950 casing, column-wheel actuator integrated smoothly into the crown.', price: 'CHF 92,000', image: IMG.w2, specs: [{ k: 'Dial', v: 'Grand-Fire Enamel' }, { k: 'Case', v: 'Platinum 950' }], note: 'NUMBERED SALON ISSUE', href: 'https://external-checkout.com/vauquelin-watch-monopoussoir-v02', ctaLabel: 'Inquire Now' },
+    { id: 'p-epure', department: 'watches', ref: '5.8mm Thickness · Micro-Rotor', tag: 'Extra-Flat', title: 'The Purist Extra-Flat Micro-Rotor', desc: 'Barleycorn hand-turned guilloché dial with brushed chapter ring and micro-rotor automatic caliber. 38mm.', price: 'CHF 64,500', image: IMG.w3, specs: [{ k: 'Thickness', v: '5.8mm' }, { k: 'Diameter', v: '38mm' }], note: 'CUSTOM STRAP FITTED', href: 'https://external-checkout.com/vauquelin-watch-epure-micro-rotor', ctaLabel: 'Inquire Now' },
+    { id: 'p-cordovan', department: 'straps', ref: 'Chicago Cordovan · Color 8', tag: 'Heritage Equine', title: 'The Cordovan — Glazed Color 8', desc: 'Equine membrane naturally vegetable-tanned for 6 months. Non-porous, develops a mirror-gloss patina.', price: '€ 420', image: IMG.s1, specs: [{ k: 'Lug Widths', v: '18 / 19 / 20 / 22mm' }, { k: 'Pins', v: 'Quick-Release' }], note: 'HANDCRAFTED ON ORDER', href: 'https://external-checkout.com/vauquelin-strap-shell-cordovan-color8', ctaLabel: 'Acquire Piece' },
+    { id: 'p-veau', department: 'straps', ref: 'Annonay Tannery · Tawny', tag: 'French Calf', title: 'Epsom Calfskin — Tawny Tan', desc: 'Highly scratch-resistant stamped grain paired with a sweat-resistant French Zermatt calf interior.', price: '€ 380', image: IMG.s2, specs: [{ k: 'Thickness', v: '2.2mm Flat' }, { k: 'Buckle', v: '316L / 18k Option' }], note: 'IN STOCK · DISPATCHED IN 48H', href: 'https://external-checkout.com/vauquelin-strap-veau-epsom-fauve', ctaLabel: 'Acquire Piece' },
+    { id: 'p-alligator', department: 'straps', ref: 'Matte Nubuck · CITES Cert.', tag: 'Exotic Reserve', title: 'Nubuck Alligator — Graphite', desc: 'Buffed top grain providing a soft cashmere handfeel. Delivered with an official international CITES passport.', price: '€ 680', image: IMG.s3, specs: [{ k: 'Padding', v: 'Hand-Skived' }, { k: 'Ends', v: 'Curved or Straight' }], note: 'LIMITED HIDE ALLOCATION', href: 'https://external-checkout.com/vauquelin-strap-alligator-nubuck-graphite', ctaLabel: 'Acquire Piece' }
+  ]
+};
+
+/* ---------------- store ---------------- */
+const STORAGE_KEY = 'vauquelin_cms_v1';
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      const base = clone(DEFAULTS);
+      for (const k in saved) base[k] = saved[k];
+      return base;
+    }
+  } catch (e) { console.warn('Registry unreadable; restoring defaults.', e); }
+  return clone(DEFAULTS);
+}
+const store = reactive({ data: loadState() });
+function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(store.data)); }
+
+const DEPT_ORDER = ['rings', 'watches', 'straps'];
+function productsByDept(key) { return store.data.products.filter(p => p.department === key); }
+
+/* ---------------- shared field components ---------------- */
+const FieldText = {
+  props: ['label', 'modelValue'], emits: ['update:modelValue'],
+  template: '<div class="adm-field"><span class="adm-label">{{ label }}</span><input class="adm-input" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)"/></div>'
+};
+const FieldArea = {
+  props: ['label', 'modelValue'], emits: ['update:modelValue'],
+  template: '<div class="adm-field"><span class="adm-label">{{ label }}</span><textarea class="adm-textarea" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)"></textarea></div>'
+};
+const FieldImage = {
+  props: ['label', 'modelValue'], emits: ['update:modelValue'],
+  template: `<div class="adm-field"><span class="adm-label">{{ label }}</span><input class="adm-input" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"/><img v-if="modelValue" class="preview-img" :src="modelValue" onerror="this.style.display='none'" onload="this.style.display='block'" alt="preview"/></div>`
+};
+const ListStrings = {
+  props: ['label', 'modelValue'], emits: ['update:modelValue'],
+  template: `<div class="adm-field" style="margin-top:1.25rem">
+    <span class="adm-label">{{ label }}</span>
+    <div v-for="(item, i) in modelValue" :key="i" style="display:flex;gap:.5rem;margin-bottom:.5rem">
+      <input class="adm-input" :value="item" @input="$emit('update:modelValue', modelValue.map((v, x) => x === i ? $event.target.value : v))"/>
+      <button class="adm-btn" @click="$emit('update:modelValue', modelValue.filter((_, x) => x !== i))"><span class="material-icons-outlined" style="font-size:1rem">close</span></button>
+    </div>
+    <button class="adm-btn" @click="$emit('update:modelValue', [...modelValue, ''])"><span class="material-icons-outlined" style="font-size:1rem">add</span>Add Option</button>
+  </div>`
+};
+
+/* ---------------- site components ---------------- */
+const AppHeader = { template: '#tpl-header', setup() { return { store }; } };
+const AppFooter = { template: '#tpl-footer', setup() { return { store, toast }; } };
+const ProductCard = { props: ['product'], template: '#tpl-product-card' };
+
+const HomePage = { template: '#tpl-home', setup() { return { home: computed(() => store.data.home) }; } };
+
+const GalleryPage = {
+  template: '#tpl-gallery',
+  setup() {
+    const departments = computed(() => DEPT_ORDER.map(key => ({ key, meta: store.data.departments[key], items: productsByDept(key) })));
+    const scrollToDept = key => document.getElementById('dept-' + key)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return { departments, scrollToDept };
+  }
+};
+
+const ProductPage = {
+  template: '#tpl-product',
+  setup() {
+    const route = VueRouter.useRoute();
+    const product = computed(() => store.data.products.find(p => p.id === route.params.id));
+    const deptMeta = computed(() => product.value ? store.data.departments[product.value.department] : { name: '' });
+    const related = computed(() => product.value ? store.data.products.filter(p => p.department === product.value.department && p.id !== product.value.id).slice(0, 3) : []);
+    return { product, deptMeta, related };
+  }
+};
+
+const AboutPage = { template: '#tpl-about', setup() { return { about: computed(() => store.data.about) }; } };
+
+const ContactPage = {
+  template: '#tpl-contact',
+  setup() {
+    const form = reactive({ name: '', email: '', phone: '', discipline: '', salon: '', timeline: '', vision: '', consent: false });
+    const submit = () => {
+      toast('Dossier Received — Forwarded to the Salon. Confirmation #VQ-' + Date.now().toString(36).toUpperCase());
+      Object.assign(form, { name: '', email: '', phone: '', discipline: '', salon: '', timeline: '', vision: '', consent: false });
+    };
+    return { contact: computed(() => store.data.contact), form, submit };
+  }
+};
+
+/* ---------------- dashboard components ---------------- */
+function sectionEditor(sectionName, sectionLabel) {
+  return {
+    template: '#tpl-dash-' + sectionName,
+    data() { return { draft: clone(store.data[sectionName]) }; },
+    methods: {
+      save() { store.data[sectionName] = clone(this.draft); persist(); toast(sectionLabel + ' published to the site.'); },
+      discard() { this.draft = clone(store.data[sectionName]); toast('Changes discarded.'); }
+    }
+  };
+}
+const DashHome = sectionEditor('home', 'Home page');
+const DashAbout = sectionEditor('about', 'About page');
+const DashContact = sectionEditor('contact', 'Contact page');
+
+const DashLayout = {
+  template: '#tpl-dash',
+  data() { return { unlocked: sessionStorage.getItem('vq_console') === '1', code: '' }; },
+  methods: {
+    unlock() {
+      if (this.code === 'vauquelin') { sessionStorage.setItem('vq_console', '1'); this.unlocked = true; toast('Vault unlocked. Welcome.'); }
+      else toast('Incorrect passcode. The vault remains sealed.');
+    }
+  }
+};
+
+const DashProducts = {
+  template: '#tpl-dash-products',
+  setup() {
+    const deptName = key => store.data.departments[key]?.name || key;
+    const setDept = (key, field, value) => { store.data.departments[key][field] = value; persist(); };
+    const remove = p => { if (confirm('Remove "' + p.title + '" from the registry permanently?')) { store.data.products = store.data.products.filter(x => x.id !== p.id); persist(); toast('Piece removed from the registry.'); } };
+    return { store, deptOrder: DEPT_ORDER, departments: store.data.departments, deptName, setDept, remove };
+  }
+};
+
+const DashProductForm = {
+  template: '#tpl-dash-product-form',
+  setup() {
+    const route = VueRouter.useRoute();
+    const router = VueRouter.useRouter();
+    const isNew = !route.params.id;
+    const source = isNew ? null : store.data.products.find(p => p.id === route.params.id);
+    const draft = reactive(clone(source || { id: uid(), department: 'rings', ref: '', tag: '', title: '', desc: '', price: '', image: '', specs: [], note: '', href: '', ctaLabel: 'Acquire Piece' }));
+    const save = () => {
+      if (!draft.title.trim()) { toast('A title is required for registration.'); return; }
+      if (isNew) store.data.products.push(clone(draft));
+      else { const i = store.data.products.findIndex(p => p.id === draft.id); store.data.products[i] = clone(draft); }
+      persist(); toast(isNew ? 'Piece registered in the gallery.' : 'Piece specifications updated.');
+      router.push('/dashboard/products');
+    };
+    return { draft, isNew, save, deptOrder: DEPT_ORDER, departments: store.data.departments };
+  }
+};
+
+/* ---------------- router & app ---------------- */
+const routes = [
+  { path: '/', component: HomePage },
+  { path: '/gallery', component: GalleryPage },
+  { path: '/gallery/:id', component: ProductPage },
+  { path: '/about', component: AboutPage },
+  { path: '/contact', component: ContactPage },
+  { path: '/dashboard', component: DashLayout, children: [
+    { path: '', redirect: '/dashboard/home' },
+    { path: 'home', component: DashHome },
+    { path: 'about', component: DashAbout },
+    { path: 'contact', component: DashContact },
+    { path: 'products', component: DashProducts },
+    { path: 'products/new', component: DashProductForm },
+    { path: 'products/:id', component: DashProductForm }
+  ]},
+  { path: '/:pathMatch(.*)*', redirect: '/' }
+];
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+  scrollBehavior(to) { return to.hash ? {} : { top: 0, behavior: 'instant' }; }
+});
+
+const App = {
+  template: '#tpl-app',
+  setup() { return { toastState }; }
+};
+
+const app = createApp(App);
+app.component('app-header', AppHeader);
+app.component('app-footer', AppFooter);
+app.component('product-card', ProductCard);
+app.component('field-text', FieldText);
+app.component('field-area', FieldArea);
+app.component('field-image', FieldImage);
+app.component('list-strings', ListStrings);
+app.use(router);
+app.mount('#app');
+</script>
+</body>
+</html>
